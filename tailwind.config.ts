@@ -22,6 +22,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -46,6 +47,14 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        promo: {
+          discount: "hsl(var(--promo-discount))",
+          season: "hsl(var(--promo-season))",
+          bogo: "hsl(var(--promo-bogo))",
+          bundle: "hsl(var(--promo-bundle))",
+          clearance: "hsl(var(--promo-clearance))",
+          special: "hsl(var(--promo-special))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
