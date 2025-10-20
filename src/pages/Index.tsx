@@ -3,19 +3,27 @@ import { PromotionCard } from "@/components/PromotionCard";
 import { PromotionFilters } from "@/components/PromotionFilters";
 import { PromotionDialog } from "@/components/PromotionDialog";
 import { YearCalendar } from "@/components/YearCalendar";
+import { MonthCalendar } from "@/components/MonthCalendar";
+import { WeekCalendar } from "@/components/WeekCalendar";
+import { DayCalendar } from "@/components/DayCalendar";
 import { mockPromotions } from "@/data/mockPromotions";
-import { Promotion, PromotionType } from "@/types/promotion";
+import { Promotion, PromotionType, PromotionDuration } from "@/types/promotion";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, List, Plus, TrendingUp } from "lucide-react";
+import { Calendar, List, Plus, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { addMonths, addWeeks, addDays } from "date-fns";
 
 const Index = () => {
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<PromotionType[]>([]);
+  const [selectedDurations, setSelectedDurations] = useState<PromotionDuration[]>([]);
   const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState(2025);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedWeek, setSelectedWeek] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleStoreChange = (store: string) => {
     setSelectedStores(prev =>
@@ -33,10 +41,19 @@ const Index = () => {
     );
   };
 
+  const handleDurationChange = (duration: PromotionDuration) => {
+    setSelectedDurations(prev =>
+      prev.includes(duration)
+        ? prev.filter(d => d !== duration)
+        : [...prev, duration]
+    );
+  };
+
   const filteredPromotions = mockPromotions.filter(promo => {
     const storeMatch = selectedStores.length === 0 || selectedStores.includes(promo.store);
     const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(promo.type);
-    return storeMatch && typeMatch;
+    const durationMatch = selectedDurations.length === 0 || selectedDurations.includes(promo.duration);
+    return storeMatch && typeMatch && durationMatch;
   });
 
   const handlePromotionClick = (promotion: Promotion) => {
@@ -86,8 +103,10 @@ const Index = () => {
             <PromotionFilters
               selectedStores={selectedStores}
               selectedTypes={selectedTypes}
+              selectedDurations={selectedDurations}
               onStoreChange={handleStoreChange}
               onTypeChange={handleTypeChange}
+              onDurationChange={handleDurationChange}
             />
           </aside>
 
@@ -134,21 +153,115 @@ const Index = () => {
             </div>
 
             {/* Tabs */}
-            <Tabs defaultValue="calendar" className="w-full">
-              <TabsList className="grid w-full max-w-md grid-cols-2">
-                <TabsTrigger value="calendar" className="gap-2">
+            <Tabs defaultValue="year" className="w-full">
+              <TabsList className="grid w-full max-w-2xl grid-cols-5">
+                <TabsTrigger value="year" className="gap-2">
                   <Calendar className="w-4 h-4" />
-                  Vista Calendario
+                  Año
+                </TabsTrigger>
+                <TabsTrigger value="month" className="gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Mes
+                </TabsTrigger>
+                <TabsTrigger value="week" className="gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Semana
+                </TabsTrigger>
+                <TabsTrigger value="day" className="gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Día
                 </TabsTrigger>
                 <TabsTrigger value="list" className="gap-2">
                   <List className="w-4 h-4" />
-                  Vista Lista
+                  Lista
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="calendar" className="mt-6">
+              <TabsContent value="year" className="mt-6">
                 <YearCalendar
                   year={selectedYear}
+                  promotions={filteredPromotions}
+                  onPromotionClick={handlePromotionClick}
+                />
+              </TabsContent>
+
+              <TabsContent value="month" className="mt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedMonth(prev => prev === 0 ? 11 : prev - 1)}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedMonth(prev => prev === 11 ? 0 : prev + 1)}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+                <MonthCalendar
+                  year={selectedYear}
+                  month={selectedMonth}
+                  promotions={filteredPromotions}
+                  onPromotionClick={handlePromotionClick}
+                />
+              </TabsContent>
+
+              <TabsContent value="week" className="mt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedWeek(prev => Math.max(0, prev - 1))}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedWeek(prev => Math.min(51, prev + 1))}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+                <WeekCalendar
+                  year={selectedYear}
+                  month={selectedMonth}
+                  weekIndex={selectedWeek}
+                  promotions={filteredPromotions}
+                  onPromotionClick={handlePromotionClick}
+                />
+              </TabsContent>
+
+              <TabsContent value="day" className="mt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedDate(prev => addDays(prev, -1))}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedDate(new Date())}
+                  >
+                    Hoy
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedDate(prev => addDays(prev, 1))}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+                <DayCalendar
+                  date={selectedDate}
                   promotions={filteredPromotions}
                   onPromotionClick={handlePromotionClick}
                 />

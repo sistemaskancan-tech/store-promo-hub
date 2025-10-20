@@ -6,12 +6,15 @@ export type PromotionType =
   | "clearance" 
   | "special";
 
+export type PromotionDuration = "fija" | "temporal";
+
 export interface Promotion {
   id: string;
   title: string;
   description: string;
   store: string;
   type: PromotionType;
+  duration: PromotionDuration;
   startDate: Date;
   endDate: Date;
   discount?: number;

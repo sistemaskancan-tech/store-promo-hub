@@ -7,6 +7,7 @@ export const mockPromotions: Promotion[] = [
     description: "Descuentos de hasta 70% en toda la tienda",
     store: "Tienda Centro",
     type: "discount",
+    duration: "temporal",
     startDate: new Date(2025, 10, 24),
     endDate: new Date(2025, 10, 30),
     discount: 70
@@ -17,6 +18,7 @@ export const mockPromotions: Promotion[] = [
     description: "Llegada de nueva colección primavera-verano",
     store: "Tienda Norte",
     type: "season",
+    duration: "fija",
     startDate: new Date(2025, 2, 1),
     endDate: new Date(2025, 2, 31),
   },
@@ -26,6 +28,7 @@ export const mockPromotions: Promotion[] = [
     description: "Compra un par y lleva el segundo gratis",
     store: "Tienda Sur",
     type: "bogo",
+    duration: "temporal",
     startDate: new Date(2025, 1, 14),
     endDate: new Date(2025, 1, 20),
   },
@@ -35,6 +38,7 @@ export const mockPromotions: Promotion[] = [
     description: "3 piezas por el precio de 2",
     store: "Tienda Este",
     type: "bundle",
+    duration: "temporal",
     startDate: new Date(2025, 3, 1),
     endDate: new Date(2025, 3, 15),
   },
@@ -44,6 +48,7 @@ export const mockPromotions: Promotion[] = [
     description: "Últimas piezas de temporada con descuentos especiales",
     store: "Tienda Oeste",
     type: "clearance",
+    duration: "fija",
     startDate: new Date(2025, 0, 10),
     endDate: new Date(2025, 0, 31),
     discount: 50
@@ -54,6 +59,7 @@ export const mockPromotions: Promotion[] = [
     description: "Ofertas exclusivas online",
     store: "Tienda Plaza",
     type: "special",
+    duration: "temporal",
     startDate: new Date(2025, 10, 27),
     endDate: new Date(2025, 10, 27),
     discount: 60
@@ -64,6 +70,7 @@ export const mockPromotions: Promotion[] = [
     description: "Regalos especiales con descuento",
     store: "Tienda Outlet",
     type: "special",
+    duration: "fija",
     startDate: new Date(2025, 4, 8),
     endDate: new Date(2025, 4, 12),
     discount: 30
@@ -74,6 +81,7 @@ export const mockPromotions: Promotion[] = [
     description: "Uniformes y útiles escolares",
     store: "Tienda Premium",
     type: "season",
+    duration: "fija",
     startDate: new Date(2025, 7, 1),
     endDate: new Date(2025, 7, 31),
   },
