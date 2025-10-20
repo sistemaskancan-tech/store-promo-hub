@@ -1,4 +1,4 @@
-import { PromotionType, PromotionDuration, promotionTypeLabels, stores } from "@/types/promotion";
+import { PromotionType, PromotionDuration, promotionTypeLabels, stores, fixedPromotionTypes, temporalPromotionTypes } from "@/types/promotion";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,6 +22,24 @@ export const PromotionFilters = ({
   onTypeChange,
   onDurationChange
 }: PromotionFiltersProps) => {
+  // Filter available promotion types based on selected durations
+  const getAvailableTypes = (): PromotionType[] => {
+    if (selectedDurations.length === 0) {
+      return Object.keys(promotionTypeLabels) as PromotionType[];
+    }
+    
+    const types: PromotionType[] = [];
+    if (selectedDurations.includes("fija")) {
+      types.push(...fixedPromotionTypes);
+    }
+    if (selectedDurations.includes("temporal")) {
+      types.push(...temporalPromotionTypes);
+    }
+    return types;
+  };
+
+  const availableTypes = getAvailableTypes();
+
   return (
     <Card className="p-6 h-fit sticky top-4">
       <div className="flex items-center gap-2 mb-4">
@@ -55,7 +73,7 @@ export const PromotionFilters = ({
           <Label className="text-sm font-medium mb-3 block">Tipo de Promoción</Label>
           <ScrollArea className="h-[180px]">
             <div className="space-y-3">
-              {(Object.keys(promotionTypeLabels) as PromotionType[]).map((type) => (
+              {availableTypes.map((type) => (
                 <div key={type} className="flex items-center space-x-2">
                   <Checkbox
                     id={`type-${type}`}

@@ -39,3 +39,6 @@ export const stores = [
   "Tienda Outlet",
   "Tienda Premium"
 ];
+
+export const fixedPromotionTypes: PromotionType[] = ["clearance", "discount"];
+export const temporalPromotionTypes: PromotionType[] = ["season", "bogo", "bundle", "special"];

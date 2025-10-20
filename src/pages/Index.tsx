@@ -7,7 +7,7 @@ import { MonthCalendar } from "@/components/MonthCalendar";
 import { WeekCalendar } from "@/components/WeekCalendar";
 import { DayCalendar } from "@/components/DayCalendar";
 import { mockPromotions } from "@/data/mockPromotions";
-import { Promotion, PromotionType, PromotionDuration } from "@/types/promotion";
+import { Promotion, PromotionType, PromotionDuration, fixedPromotionTypes, temporalPromotionTypes } from "@/types/promotion";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, List, Plus, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
@@ -42,11 +42,25 @@ const Index = () => {
   };
 
   const handleDurationChange = (duration: PromotionDuration) => {
-    setSelectedDurations(prev =>
-      prev.includes(duration)
+    setSelectedDurations(prev => {
+      const newDurations = prev.includes(duration)
         ? prev.filter(d => d !== duration)
-        : [...prev, duration]
-    );
+        : [...prev, duration];
+      
+      // Clean up incompatible selected types
+      if (newDurations.length > 0) {
+        const availableTypes: PromotionType[] = [];
+        if (newDurations.includes("fija")) {
+          availableTypes.push(...fixedPromotionTypes);
+        }
+        if (newDurations.includes("temporal")) {
+          availableTypes.push(...temporalPromotionTypes);
+        }
+        setSelectedTypes(current => current.filter(type => availableTypes.includes(type)));
+      }
+      
+      return newDurations;
+    });
   };
 
   const filteredPromotions = mockPromotions.filter(promo => {
